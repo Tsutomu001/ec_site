@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class RedirectIfAuthenticated
 {
+    private const GUARD_USER = 'users';
+    private const GUARD_OWNER = 'owners';
+    private const GUARD_ADMIN = 'admin';
+
     /**
      * Handle an incoming request.
      *
@@ -19,12 +23,32 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        $guards = empty($guards) ? [null] : $guards;
+        // $guards = empty($guards) ? [null] : $guards;
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
+        // foreach ($guards as $guard) {
+        //     if (Auth::guard($guard)->check()) {
+        //         return redirect(RouteServiceProvider::HOME);
+        //     }
+        // }
+
+        // self:: は、自クラスを示す
+        // routeIsメゾット …受信リクエストが名前付きルートと一致するか
+        // checkメゾット …ユーザーが認証されているかどうか、もし認証されていたらtrueを返す
+
+        // ログイン済みユーザーがアクセスしてきたらリダイレクトする処理
+        // ユーザーの場合
+        if(Auth::guard(self::GUARD_USER)->check() && $request->routeIs('user.*')){
+            return redirect(RouteServiceProvider::HOME);
+        }
+
+        // オーナーの場合
+        if(Auth::guard(self::GUARD_OWNER)->check() && $request->routeIs('owner.*')){
+            return redirect(RouteServiceProvider::OWNER_HOME);
+        }
+
+        // 管理者の場合
+        if(Auth::guard(self::GUARD_ADMIN)->check() && $request->routeIs('admin.*')){
+            return redirect(RouteServiceProvider::ADMIN_HOME);
         }
 
         return $next($request);
