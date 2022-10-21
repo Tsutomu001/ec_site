@@ -17,7 +17,12 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
+    // userでログインしたリダイレクト先
     public const HOME = '/dashboard';
+    // ownerでログインしたリダイレクト先
+    public const OWNER_HOME = '/owner/dashboard';
+    // adminでログインしたリダイレクト先
+    public const ADMIN_HOME = '/admin/dashboard';
 
     /**
      * The controller namespace for the application.
@@ -43,7 +48,30 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
+            // adminでログインしたリダイレクト先
+
+            // 最初のURLがadminのものを選別する
+            Route::prefix('admin')
+                // 別名"admin."とする
+                ->as('admin.')
+                // route/web.phpファイルに適用される
+                ->middleware('web')
+                // ファイルがある場所のパスを示す
+                ->namespace($this->namespace)
+                // ログインしたら全てadmin.phpのルーティング設定にする
+                ->group(base_path('routes/admin.php'));
+
+            // ownerでログインしたリダイレクト先
+            Route::prefix('owner')
+                ->as('owner.')
+                ->middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/owner.php'));
+
+            // userでログインしたリダイレクト先
+            Route::prefix('/')
+                ->as('user.')
+                ->middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
         });
