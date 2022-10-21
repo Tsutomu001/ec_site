@@ -45,7 +45,19 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // ログインフォームから入力された値からパスワードを比較し、認証する
+        if($this->routeIs('owner.*')){
+            $guard = 'owners';
+        } elseif($this->routeIs('admin.*')){
+            $guard = 'admin';
+        } else {
+            $guard = 'users';
+        }
+
+        // attemptメゾット …「ログイン」フォームと「DB」フォームの認証試行(正しいかどうか？)を処理するために行う
+        // onlyメソッド …入力データのサブセットを取得する
+        // boolean …"true" or "false"で返す
+        if (! Auth::guard($guard)->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
