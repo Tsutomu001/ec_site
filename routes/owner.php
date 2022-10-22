@@ -22,11 +22,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('owner\auth.welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('owner\auth.dashboard');
 })->middleware(['auth:owners'])->name('dashboard');
 
 Route::middleware('guest')->group(function () {

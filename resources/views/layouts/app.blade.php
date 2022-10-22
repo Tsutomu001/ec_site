@@ -22,7 +22,17 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+
+            {{-- adminユーザーでログインした場合はadmin-navigationが表示される --}}
+            @if(auth('admin')->user())
+                @include('layouts.admin-navigation')
+            {{-- ownersユーザーでログインした場合はowners-navigationが表示される --}}
+            @elseif(auth('owners')->user())
+                @include('layouts.owners-navigation')
+            {{-- usersユーザーでログインした場合はusers-navigationが表示される --}}
+            @elseif(auth('users')->user())
+                @include('layouts.users-navigation')
+            @endif
 
             <!-- Page Heading -->
             <header class="bg-white shadow">
