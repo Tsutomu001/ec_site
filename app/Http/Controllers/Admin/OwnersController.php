@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+// Eloquentの定義
+use App\Models\Owner;
+// クエリビルダの定義
+use Illuminate\Support\Facades\DB;
+// Carbonの定義
+use Carbon\Carbon;
 
 class OwnersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function __construct()
     {
         $this->middleware('auth:admin');
@@ -20,7 +20,26 @@ class OwnersController extends Controller
 
     public function index()
     {
-        dd('オーナー一覧です。');
+        // Carbon
+        $data_now = Carbon::now();
+        $data_parse = Carbon::parse(now());
+        echo $data_now->year;
+        echo $data_parse;
+
+        // Eloquent
+        $e_all = Owner::all();
+        // クエリビルダ
+        $q_get = DB::table('owners')->select('name', 'created_at')->get();
+
+
+        // $q_first = DB::table('owners')->select('name')->first();
+        // // コレクション
+        // $c_test = collect([
+        //     'name' => 'てすと'
+        // ]);
+        // dd($e_all,$q_get,$q_first,$c_test);
+
+        return view('admin\auth.owners.index', compact('e_all', 'q_get'));
     }
 
     /**
