@@ -20,18 +20,16 @@ class OwnersController extends Controller
 
     public function index()
     {
-        // Carbon
-        $data_now = Carbon::now();
-        $data_parse = Carbon::parse(now());
-        echo $data_now->year;
-        echo $data_parse;
+        // // Carbon
+        // $data_now = Carbon::now();
+        // $data_parse = Carbon::parse(now());
+        // echo $data_now->year;
+        // echo $data_parse;
 
-        // Eloquent
-        $e_all = Owner::all();
-        // クエリビルダ
-        $q_get = DB::table('owners')->select('name', 'created_at')->get();
-
-
+        // // Eloquent
+        // $e_all = Owner::all();
+        // // クエリビルダ
+        // $q_get = DB::table('owners')->select('name', 'created_at')->get();
         // $q_first = DB::table('owners')->select('name')->first();
         // // コレクション
         // $c_test = collect([
@@ -39,7 +37,11 @@ class OwnersController extends Controller
         // ]);
         // dd($e_all,$q_get,$q_first,$c_test);
 
-        return view('admin\auth.owners.index', compact('e_all', 'q_get'));
+        // return view('admin\auth.owners.index', compact('e_all', 'q_get'));
+
+        $owners = Owner::select('name','email','created_at')->get();
+
+        return view('admin\auth.owners.index', compact('owners'));
     }
 
     /**
