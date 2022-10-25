@@ -51,7 +51,7 @@ class OwnersController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin\auth.owners.create');
     }
 
     /**
