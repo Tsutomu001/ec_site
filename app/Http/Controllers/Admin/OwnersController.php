@@ -10,6 +10,8 @@ use App\Models\Owner;
 use Illuminate\Support\Facades\DB;
 // Carbonの定義
 use Carbon\Carbon;
+// Hashの定義
+use Illuminate\Support\Facades\Hash;
 
 class OwnersController extends Controller
 {
@@ -62,7 +64,24 @@ class OwnersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // RegisteredUserControllerから引用
+        // validation
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:owners'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        // 保存処理
+        Owner::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        //routeの場合は"\auth"は、使用しない 
+        return redirect()->route('admin.owners.index');
+
     }
 
     /**
