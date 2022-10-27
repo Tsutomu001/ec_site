@@ -4,9 +4,9 @@
 {{-- 背景について --}}
 @php
 // 正しい情報の場合
-if($status === 'info'){$bgColor = 'bg-blue-300';}
+if(session('status') === 'info'){$bgColor = 'bg-blue-300';}
 // 正しくない情報の場合
-if($status === 'error'){$bgColor = 'bg-red-500';}
+if(session('status') === 'alert'){$bgColor = 'bg-red-500';}
 @endphp
 
 {{-- メッセージを取得した場合 --}}

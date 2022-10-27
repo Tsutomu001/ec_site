@@ -33,6 +33,15 @@ Route::get('/', function () {
 Route::resource('owners', OwnersController::class)
                 ->middleware('auth:admin');
 
+// ソフトデリートのルーティング設定
+Route::prefix('expired-owners')-> 
+    middleware('auth:admin')->group(function(){ 
+        Route::get('index', [OwnersController::class, 'expiredOwnerIndex'])->name('expiredowners.index'); 
+        Route::post('destroy/{owner}', [OwnersController::class, 'expiredOwnerDestroy'])->name('expired-owners.destroy'); 
+});
+
+                
+
 Route::get('/dashboard', function () {
     return view('admin\auth.dashboard');
 })->middleware(['auth:admin'])->name('dashboard');
