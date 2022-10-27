@@ -105,6 +105,8 @@ class OwnersController extends Controller
      */
     public function edit($id)
     {
+        // find() ...idが見つからなかったらエラー文
+        // findOrfail() ...idが見つからなかったら404 Not Found
         $owner = Owner::findOrFail($id);
         // dd($owner);
 
@@ -120,7 +122,15 @@ class OwnersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $owner = Owner::findOrFail($id);
+        $owner->name = $request->name;
+        $owner->email = $request->email;
+        $owner->password = Hash::make($request->password);
+        $owner->save();
+
+        return redirect()
+        ->route('admin.owners.index')
+        ->with('message','オーナー情報更新しました。');
     }
 
     /**
