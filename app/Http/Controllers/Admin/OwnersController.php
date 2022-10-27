@@ -41,7 +41,8 @@ class OwnersController extends Controller
 
         // return view('admin\auth.owners.index', compact('e_all', 'q_get'));
 
-        $owners = Owner::select('id','name','email','created_at')->get();
+        $owners = Owner::select('id','name','email','created_at')
+                ->paginate(3);
 
         return view('admin\auth.owners.index', compact('owners'));
     }
@@ -153,7 +154,7 @@ class OwnersController extends Controller
 
     public function expiredOwnerIndex(){ 
         //onlyTrashed() ...ソフトデリートされたモデルのみ取得する
-        $expiredOwners = Owner::onlyTrashed()->get(); 
+        $expiredOwners = Owner::onlyTrashed()->paginate(3);
         return view('admin\auth.expired-owners', compact('expiredOwners')); 
     } 
     

@@ -43,6 +43,7 @@
                                         @endforeach
                                         </tbody>
                                     </table>
+                                    {{ $expiredOwners->links() }}
                                 </div>
                             </div>
                     </section>
