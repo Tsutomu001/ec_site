@@ -25,13 +25,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin\auth.welcome');
-});
+// Route::get('/', function () {
+//     return view('admin\auth.welcome');
+// });
 
 // リソースコントローラーのルーティング設定
 Route::resource('owners', OwnersController::class)
-                ->middleware('auth:admin');
+                ->middleware('auth:admin')
+                // except ...使用しないメソッドを指定
+                ->except(['show']);
 
 // ソフトデリートのルーティング設定
 Route::prefix('expired-owners')-> 
