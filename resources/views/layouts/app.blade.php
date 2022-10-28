@@ -24,13 +24,14 @@
         <div class="min-h-screen bg-gray-100">
 
             {{-- adminユーザーでログインした場合はadmin-navigationが表示される --}}
-            @if(auth('admin')->user())
+            {{-- isメソッド ...指定文字列が指定パターンに一致するかどうかを判別 --}}
+            @if(request()->is('admin*'))
                 @include('layouts.admin-navigation')
             {{-- ownersユーザーでログインした場合はowners-navigationが表示される --}}
-            @elseif(auth('owners')->user())
-                @include('layouts.owners-navigation')
+            @elseif(request()->is('owner*'))
+                @include('layouts.owner-navigation')
             {{-- usersユーザーでログインした場合はusers-navigationが表示される --}}
-            @elseif(auth('users')->user())
+            @else
                 @include('layouts.users-navigation')
             @endif
 
