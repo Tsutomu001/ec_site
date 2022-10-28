@@ -11,6 +11,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 // ソフトデリートを使用するため
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+// Shopモデルを使用するため
+use App\Models\Shops;
+
 class Owner extends Authenticatable
 {
     use HasFactory,SoftDeletes;
@@ -44,4 +47,10 @@ class Owner extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function shop()
+    {
+        // Owner(親)とShop(子)のリレーション
+        return $this->hasOne(Shop::class);
+    }
 }
