@@ -17,7 +17,11 @@ class CreateShopsTable extends Migration
             $table->id();
             // foreignIdメソッド ...UNSIGNED BIGINTカラムを作成する
             // constrainedメソッド ...規約を使用して参照されるテーブルとカラムの名前を決定する
-            $table->foreignId('owner_id')->constrained();
+            $table->foreignId('owner_id')
+            ->constrained()
+            // 親モデル(owner)と連動させるために定義する
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->string('name'); 
             $table->text('information'); 
             $table->string('filename');
