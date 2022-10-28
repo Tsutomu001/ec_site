@@ -11,6 +11,15 @@ class Shop extends Model
 {
     use HasFactory;
 
+    // DBから取得するカラムを設定する
+    protected $fillable = [
+        'owner_id',
+        'name',
+        'information',
+        'filename',
+        'is_selling'
+    ];
+
     public function owner()
     {
         // Owner(親)とShop(子)のリレーション

@@ -6,12 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // Eloquentの定義
 use App\Models\Owner;
+use App\Models\Shop;
 // クエリビルダの定義
 use Illuminate\Support\Facades\DB;
 // Carbonの定義
 use Carbon\Carbon;
 // Hashの定義
 use Illuminate\Support\Facades\Hash;
+// Throwableの定義
+use Throwable;
+// Logの定義
+use Illuminate\Support\Facades\Log;
+
 
 class OwnersController extends Controller
 {
@@ -73,12 +79,33 @@ class OwnersController extends Controller
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        // 保存処理
-        Owner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // トランザクション処理
+        // Throwable ...例外を取得する
+        try{
+            // クロージャーの中で$requestを使用するため定義する。
+            DB::transaction(function () use($request) {
+                // 保存処理
+                $owner = Owner::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+            ]);
+
+            Shop::create([
+                'owner_id' => $owner->id,
+                'name' => '店名を入力してください',
+                'information' => '',
+                'filename' => '',
+                'is_selling' => true
+            ]);
+
+        },2);
+        }catch(Throwable $e){
+            // もしエラーが出たらLogを出力
+            Log::error($e);
+            // 画面上に出力する
+            throw $e;
+        }
 
         //routeの場合は"\auth"は、使用しない 
         return redirect()
