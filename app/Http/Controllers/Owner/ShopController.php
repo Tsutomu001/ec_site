@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Shop;
 // Authの定義
 use Illuminate\Support\Facades\Auth;
+// Storageの定義
+use Illuminate\Support\Facades\Storage;
+
 class ShopController extends Controller
 {
     public function __construct()
@@ -40,10 +43,21 @@ class ShopController extends Controller
 
     public function edit($id)
     {
-        dd(Shop::findOrFail($id));
+        $shop = Shop::findOrFail($id);
+        // dd(Shop::findOrFail($id));
+        return view('owner\auth.shops.edit', compact('shop'));
     }
 
     public function update(Request $request, $id)
     {
+        $imageFile = $request->image; //「$imageFile」に一時保存する 
+
+        // isValid() ...ファイルが存在するかどうかを判定することに加え、ファイルのアップロードに問題がなかったことを確認する
+        if(!is_null($imageFile) && $imageFile->isValid() ){ 
+        // putFile() ...もしフォルダがなかったらshopsフォルダを作成し、画像を入れる
+        Storage::putFile('public/shops', $imageFile); 
+        } 
+
+        return redirect()->route('owner.shops.index');
     }
 }
