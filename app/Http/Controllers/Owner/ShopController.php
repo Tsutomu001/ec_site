@@ -10,6 +10,8 @@ use App\Models\Shop;
 use Illuminate\Support\Facades\Auth;
 // Storageの定義
 use Illuminate\Support\Facades\Storage;
+// InterventionImageの定義
+use InterventionImage;
 
 class ShopController extends Controller
 {
@@ -35,6 +37,9 @@ class ShopController extends Controller
 
     public function index()
     {
+        // 使用するPHPの説明
+        // phpinfo();
+
         // $ownerId = Auth::id();
         $shops = Shop::where('owner_id' , Auth::id())->get();
 
@@ -54,8 +59,25 @@ class ShopController extends Controller
 
         // isValid() ...ファイルが存在するかどうかを判定することに加え、ファイルのアップロードに問題がなかったことを確認する
         if(!is_null($imageFile) && $imageFile->isValid() ){ 
-        // putFile() ...もしフォルダがなかったらshopsフォルダを作成し、画像を入れる
-        Storage::putFile('public/shops', $imageFile); 
+            // リサイズなしの場合
+            // putFile() ...もしフォルダがなかったらshopsフォルダを作成し、画像を入れる
+            // Storage::putFile('public/shops', $imageFile); 
+
+            // uniqid() ...ユニークなIDを取得する
+            // rand() ...重複しないファイル名
+            $fileName = uniqid(rand().'_'); 
+            // extension() ...ファイル拡張する
+            $extension = $imageFile->extension();
+            // ファイル名と拡張子を接続する
+            $fileNameToStore = $fileName. '.' . $extension; 
+            // アップロードされた画像を$imageFileに入れてresizeして拡張子を取得する
+            $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
+            
+            // $imageFile, $resizedImageはそれぞれ違うことを確認
+            // dd($imageFile, $resizedImage);
+
+            Storage::put('public/shops/' . $fileNameToStore, $resizedImage );
+
         } 
 
         return redirect()->route('owner.shops.index');
