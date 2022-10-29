@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 // InterventionImageの定義
 use InterventionImage;
+// UploadImageRequestの定義
+use App\Http\Requests\UploadImageRequest;
 
 class ShopController extends Controller
 {
@@ -53,7 +55,7 @@ class ShopController extends Controller
         return view('owner\auth.shops.edit', compact('shop'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UploadImageRequest $request, $id)
     {
         $imageFile = $request->image; //「$imageFile」に一時保存する 
 
