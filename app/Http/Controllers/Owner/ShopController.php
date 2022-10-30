@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 use InterventionImage;
 // UploadImageRequestの定義
 use App\Http\Requests\UploadImageRequest;
+// ImageServiceの定義
+use App\Services\ImageService;
 
 class ShopController extends Controller
 {
@@ -60,25 +62,31 @@ class ShopController extends Controller
         $imageFile = $request->image; //「$imageFile」に一時保存する 
 
         // isValid() ...ファイルが存在するかどうかを判定することに加え、ファイルのアップロードに問題がなかったことを確認する
-        if(!is_null($imageFile) && $imageFile->isValid() ){ 
-            // リサイズなしの場合
-            // putFile() ...もしフォルダがなかったらshopsフォルダを作成し、画像を入れる
-            // Storage::putFile('public/shops', $imageFile); 
+        if(!is_null($imageFile) && $imageFile->isValid() ){
 
-            // uniqid() ...ユニークなIDを取得する
-            // rand() ...重複しないファイル名
-            $fileName = uniqid(rand().'_'); 
-            // extension() ...ファイル拡張する
-            $extension = $imageFile->extension();
-            // ファイル名と拡張子を接続する
-            $fileNameToStore = $fileName. '.' . $extension; 
-            // アップロードされた画像を$imageFileに入れてresizeして拡張子を取得する
-            $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
+            // ImageServiceでアップロード処理した画像を取得する
+            $fileNameToStore = ImageService::upload($imageFile,'shops');
+
+            // ImageServiceを使わない場合のupdateメゾット
+            // 
+            // // リサイズなしの場合
+            // // putFile() ...もしフォルダがなかったらshopsフォルダを作成し、画像を入れる
+            // // Storage::putFile('public/shops', $imageFile); 
+
+            // // uniqid() ...ユニークなIDを取得する
+            // // rand() ...重複しないファイル名
+            // $fileName = uniqid(rand().'_'); 
+            // // extension() ...ファイル拡張する
+            // $extension = $imageFile->extension();
+            // // ファイル名と拡張子を接続する
+            // $fileNameToStore = $fileName. '.' . $extension; 
+            // // アップロードされた画像を$imageFileに入れてresizeして拡張子を取得する
+            // $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
             
-            // $imageFile, $resizedImageはそれぞれ違うことを確認
-            // dd($imageFile, $resizedImage);
+            // // $imageFile, $resizedImageはそれぞれ違うことを確認
+            // // dd($imageFile, $resizedImage);
 
-            Storage::put('public/shops/' . $fileNameToStore, $resizedImage );
+            // Storage::put('public/shops/' . $fileNameToStore, $resizedImage );
 
         } 
 
