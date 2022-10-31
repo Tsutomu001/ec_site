@@ -26,6 +26,7 @@ class UploadImageRequest extends FormRequest
         return [
             // 画像である｜拡張子がjpg,jpeg,png|最大2048MB
             'image'=>'image|mimes:jpg,jpeg,png|max:2048',
+            'files.*.image'=>'required|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 
