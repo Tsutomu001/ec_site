@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // Shopモデルを使用するため
 use App\Models\Shops;
 
+// Imageモデルを使用するため
+use App\Models\Image;
+
 class Owner extends Authenticatable
 {
     use HasFactory,SoftDeletes;
@@ -50,7 +53,13 @@ class Owner extends Authenticatable
 
     public function shop()
     {
-        // Owner(親)とShop(子)のリレーション
+        // Owner(親)とShop(子)のリレーション...1対1
         return $this->hasOne(Shop::class);
+    }
+
+    public function image()
+    {
+        // Owner(親)とimage(子)のリレーション...1対多
+        return $this->hasMany(Image::class);
     }
 }

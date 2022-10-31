@@ -15,7 +15,7 @@
 
                         {{-- 登録ボタンの配置 --}}
                         <div class="flex justify-end mb-4">
-                        <button onclick="location.href='{{ route('admin.owners.create') }}'" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">新規登録する</button>
+                            <button onclick="location.href='{{ route('admin.owners.create') }}'" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">新規登録する</button>
                         </div>
 
                             <div class="flex flex-col text-center w-full">
