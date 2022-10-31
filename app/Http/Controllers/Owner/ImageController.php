@@ -10,6 +10,8 @@ use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 // UploadImageRequestの定義
 use App\Http\Requests\UploadImageRequest;
+// ImageServiceの定義
+use App\Services\ImageService;
 
 class ImageController extends Controller
 {
@@ -60,7 +62,26 @@ class ImageController extends Controller
      */
     public function store(UploadImageRequest $request)
     {
-        dd($request);
+        // 複数枚の画像を取得する
+        $imageFiles = $request->file('files');
+
+        // $imageFilesが空でなかったら...
+        if(!is_null($imageFiles)){
+            foreach($imageFiles as $imageFile){
+                // ImageServiceでアップロード処理した画像を取得する
+                $fileNameToStore = ImageService::upload($imageFile,'products');
+                // 保存処理を行う
+                Image::create([
+                    'owner_id' => Auth::id(),
+                    'filename' => $fileNameToStore
+                ]);
+            }
+        }
+
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像登録を実施しました。',
+        'status' => 'info']);
     }
 
     /**
