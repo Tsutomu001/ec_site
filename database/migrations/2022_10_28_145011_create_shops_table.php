@@ -25,7 +25,7 @@ class CreateShopsTable extends Migration
             $table->string('name'); 
             $table->text('information'); 
             $table->string('filename');
-            // 販売中or販売中止
+            // 販売中or販売中止(0か1で返ってくる)
             $table->boolean('is_selling');
 
             $table->timestamps();

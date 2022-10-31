@@ -854,6 +854,9 @@ select {
 .w-screen {
   width: 100vw;
 }
+.w-32 {
+  width: 8rem;
+}
 .max-w-7xl {
   max-width: 80rem;
 }
