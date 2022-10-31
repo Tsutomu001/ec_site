@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UploadImageRequest;
 // ImageServiceの定義
 use App\Services\ImageService;
+// Storageの定義
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -129,6 +131,23 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // Imageのidを取得
+        $image = Image::findOrFail($id);
+        // Imageを'public/products/'に保存する
+        $filePath = 'public/products/' . $image->filename;
+
+        // exists() ...存在するかどうか
+        if(Storage::exists($filePath)){
+            // 存在したら削除する
+            Storage::delete($filePath);
+        }
+
+        // 取得したImageの画像IDも削除する
+        Image::findOrFail($id)->delete();
+
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像を削除しました。',
+        'status' => 'alert']);
     }
 }
