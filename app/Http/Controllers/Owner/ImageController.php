@@ -27,7 +27,7 @@ class ImageController extends Controller
                     $imagesOwnerId = Image::findOrFail($id)->owner->id; //imageのidからownerのidを取得する
                     $ImageId = (int)$imagesOwnerId; // キャスト ...(int)文字列→数値に型変換 
                     // $ownerId = Auth::id();// ログインしたownerのidを取得する
-                if($imageId !== Auth::id()){ // 同じでなかったら 
+                if($ImageId !== Auth::id()){ // 同じでなかったら 
                     abort(404); // 404画面表示 
                     } 
             } 
@@ -85,17 +85,6 @@ class ImageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -103,7 +92,8 @@ class ImageController extends Controller
      */
     public function edit($id)
     {
-        //
+        $image = Image::findOrFail($id);
+        return view('owner\auth.images.edit', compact('image'));
     }
 
     /**
@@ -115,7 +105,20 @@ class ImageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // Imagesのvalidationルール
+        $request->validate([
+            'title' => ['string', 'max:50']
+        ]);
+
+        $image = Image::findOrFail($id);
+        $image->title = $request->title;
+        $image->save();
+
+        return redirect()
+        ->route('owner.images.index')
+        ->with(['message' => '画像情報を更新しました。',
+        'status' => 'info']);
+
     }
 
     /**
