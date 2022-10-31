@@ -857,6 +857,9 @@ select {
 .w-32 {
   width: 8rem;
 }
+.w-1\/4 {
+  width: 25%;
+}
 .max-w-7xl {
   max-width: 80rem;
 }
