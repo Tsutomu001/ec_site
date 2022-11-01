@@ -24,11 +24,11 @@ class CreateProductsTable extends Migration
             // 'secondary_category_id'が削除されても「残る」
             $table->foreignId('secondary_category_id')
             ->constrained();
-            
+
             // 'image1'が削除されても「残る」
             $table->foreignId('image1')
             ->nullable()
-            ->constrained('images');
+            ->constrained('images');// constrainedメゾット ...どのtableデータか指定する
             $table->timestamps();
         });
     }
