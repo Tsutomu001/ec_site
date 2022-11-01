@@ -12,6 +12,7 @@ use App\Http\Controllers\Owner\Auth\VerifyEmailController;
 // コントローラー定義
 use App\Http\Controllers\Owner\ShopController;
 use App\Http\Controllers\Owner\ImageController;
+use App\Http\Controllers\Owner\ProductController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,12 @@ Route::prefix('shops')->
 
 // リソースコントローラーのルーティング設定(ImageController)
 Route::resource('images', ImageController::class)
+                ->middleware('auth:owners')
+                // except ...使用しないメソッドを指定
+                ->except(['show']);
+
+// リソースコントローラーのルーティング設定(ProductController)
+Route::resource('products', ProductController::class)
                 ->middleware('auth:owners')
                 // except ...使用しないメソッドを指定
                 ->except(['show']);
