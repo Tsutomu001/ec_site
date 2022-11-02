@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 // Image定義
 use App\Models\Image;
+// Shop定義
+use App\Models\Shop;
 // Product定義
 use App\Models\Product;
-// SecondaryCategory定義
-use App\Models\SecondaryCategory;
+// PrimaryCategory定義
+use App\Models\PrimaryCategory;
 // Owner定義
 use App\Models\Owner;
 
@@ -64,7 +66,22 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $shops = Shop::where('owner_id',Auth::id())
+        ->select('id','name')
+        ->get();
+
+        $images = Image::where('owner_id', Auth::id())
+        ->select('id','title','filename')
+        ->orderBy('updated_at','desc')
+        ->get();
+
+        // secondaryはModelsのSecondaryCategoryのpublic functionで定義したもの
+        $categories = PrimaryCategory::with('secondary')
+        ->get();
+
+        return view('owner\auth.products.create',
+                compact('shops','images','categories'));
+
     }
 
     /**
