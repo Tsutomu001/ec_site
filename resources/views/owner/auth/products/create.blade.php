@@ -33,6 +33,11 @@
                                     </select>
                                 </div>
                             </div>
+                            <x-select-image :images="$images" name="image1" />
+                            <x-select-image :images="$images" name="image2" />
+                            <x-select-image :images="$images" name="image3" />
+                            <x-select-image :images="$images" name="image4" />
+                            <x-select-image :images="$images" name="image5" />
                             {{-- flex justify-around ...横並びにしてちょうどよい間隔にする --}}
                             <div class="p-2 w-full flex justify-around mt-4">
                                 {{-- onclick ...戻るボタンを押したら○○に移動する --}}
@@ -45,4 +50,25 @@
             </div>
         </div>
     </div>
+    <script>
+        'use strict' 
+        const images = document.querySelectorAll('.image') //全てのimageタグ(.image)を取得 
+
+        images.forEach(image => { // 1つずつ繰り返す
+            // クリックしたら以下の動作
+            image.addEventListener('click', function(e){
+            const imageName = e.target.dataset.id.substr(0, 6) //data-idの6文字  substr()...引数に指定した〇～〇を取得する
+            const imageId = e.target.dataset.id.replace(imageName + '_', '') // 6文字カット  replace()...文字列中の指定値を置き換える(imageName + '_'から''に)
+            const imageFile = e.target.dataset.file 
+            const imagePath = e.target.dataset.path 
+            const modal = e.target.dataset.modal 
+
+            // サムネイルと input type=hiddenのvalueに設定 
+            // '_thumbnail'と'_hidden'に張り付ける
+            document.getElementById(imageName + '_thumbnail').src = imagePath + '/' + imageFile 
+            document.getElementById(imageName + '_hidden').value = imageId 
+            MicroModal.close(modal); //モーダルを閉じる 
+        },) 
+        })
+    </script>
 </x-app-layout>
