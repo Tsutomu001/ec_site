@@ -54,6 +54,27 @@ class Product extends Model
         return $this->belongsTo(Image::class, 'image1', 'id');
     }
 
+    public function imageSecond()
+    {
+        // Image(親)とProduct(子)のリレーション...1対多
+        // (Image::class, '紐づく「親」のカラム', '紐づく「子」のカラム')
+        return $this->belongsTo(Image::class, 'image2', 'id');
+    }
+
+    public function imageThird()
+    {
+        // Image(親)とProduct(子)のリレーション...1対多
+        // (Image::class, '紐づく「親」のカラム', '紐づく「子」のカラム')
+        return $this->belongsTo(Image::class, 'image3', 'id');
+    }
+
+    public function imageFourth()
+    {
+        // Image(親)とProduct(子)のリレーション...1対多
+        // (Image::class, '紐づく「親」のカラム', '紐づく「子」のカラム')
+        return $this->belongsTo(Image::class, 'image4', 'id');
+    }
+
     public function stock()
     {
         // Product(親)とStock(子)のリレーション...1対多
