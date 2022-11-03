@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // Auth定義
 use Illuminate\Support\Facades\Auth;
+// DBファサードの定義
+use Illuminate\Support\Facades\DB;
 // Image定義
 use App\Models\Image;
 // Shop定義
@@ -16,6 +18,9 @@ use App\Models\Product;
 use App\Models\PrimaryCategory;
 // Owner定義
 use App\Models\Owner;
+// Stock定義
+use App\Models\Stock;
+
 
 class ProductController extends Controller
 {
@@ -92,7 +97,63 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        // dd($request);
+        // validation
+        $request->validate([
+            'name' => ['required', 'string', 'max:50'],
+            'information' => ['required', 'string', 'max:1000'],
+            'price' => ['required', 'integer'],
+            'sort_order' => ['nullable', 'integer'],
+            'quantity' => ['required', 'integer'],
+            'shop_id' => ['required', 'exists:shops,id'],// exists:...存在するかどうか？
+            'category' => ['required', 'exists:secondary_categories,id'],
+            'image1' => ['nullable' , 'exists:images,id'],
+            'image2' => ['nullable' , 'exists:images,id'],
+            'image3' => ['nullable' , 'exists:images,id'],
+            'image4' => ['nullable' , 'exists:images,id'],
+            'is_selling' => ['required']
+        ]);
+
+        // トランザクション処理
+        // Throwable ...例外を取得する
+        try{
+            // クロージャーの中で$requestを使用するため定義する。
+            DB::transaction(function () use($request) {
+                // 保存処理
+                $product = Product::create([
+                    'name' => $request->name,
+                    'information' => $request->information,
+                    'price' => $request->price,
+                    'sort_order' => $request->sort_order,
+                    'shop_id' => $request->shop_id,
+                    'secondary_category_id' => $request->category,
+                    'image1' => $request->image1,
+                    'image2' => $request->image2,
+                    'image3' => $request->image3,
+                    'image4' => $request->image4,
+                    'is_selling' => $request->is_selling,
+            ]);
+
+            // 紐付いたデータ
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => 1,
+                'quantity' => $request->quantity
+            ]);
+
+        },2);
+        }catch(Throwable $e){
+            // もしエラーが出たらLogを出力
+            Log::error($e);
+            // 画面上に出力する
+            throw $e;
+        }
+
+        //routeの場合は"\auth"は、使用しない 
+        return redirect()
+        ->route('owner.products.index')
+        ->with(['message' => '商品登録しました。',
+        'status' => 'info']);
     }
 
     /**

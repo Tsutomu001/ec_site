@@ -110,7 +110,7 @@ class OwnersController extends Controller
         //routeの場合は"\auth"は、使用しない 
         return redirect()
         ->route('admin.owners.index')
-        ->with(['message' => 'オーナー登録を実施しました。。',
+        ->with(['message' => 'オーナー登録を実施しました。',
         'status' => 'info']);
 
     }

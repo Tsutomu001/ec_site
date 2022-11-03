@@ -17,6 +17,21 @@ class Product extends Model
 {
     use HasFactory;
 
+    // DBから取得するカラムを設定する
+    protected $fillable = [
+        'shop_id',
+        'name',
+        'information',
+        'price',
+        'is_selling',
+        'sort_order',
+        'secondary_category_id',
+        'image1',
+        'image2',
+        'image3',
+        'image4',
+    ];
+
     public function shop()
     {
         // Shop(親)とProduct(子)のリレーション...1対多
