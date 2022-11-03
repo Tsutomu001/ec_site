@@ -22,7 +22,8 @@
                                     <a href="{{ route('owner.products.edit' , [ 'product' => $product->id ]) }}">
                                     <div class="border rounded-md p-2 md:p-4">
                                         {{-- componentsのshop-thumbnail.blade.phpを使用する --}}
-                                        <x-thumbnail :filename="$product->imageFirst->filename" type="products" />
+                                        {{-- ?○○ ...nullだったら空のデータ --}}
+                                        <x-thumbnail filename="{{$product->imageFirst->filename ?? ''}}" type="products" />
                                         <div class="text-gray-700">{{ $product->name }}</div>
                                     </div>
                                     </a>

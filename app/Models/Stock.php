@@ -11,4 +11,11 @@ class Stock extends Model
 
     //protected ...そのクラス自身と親子関係にあるクラスのみアクセスが可能
     protected $table = 't_stocks';
+
+    // DBから取得するカラムを設定する
+    protected $fillable = [
+        'product_id',
+        'type',
+        'quantity'
+    ];
 }
