@@ -17,7 +17,6 @@
                     <form  method='post' action="{{ route('owner.shops.update' , [ 'shop' => $shop->id ]) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="-m-2">
-
                             <div class="p-2 w-1/2 mx-auto">
                                 <div class="relative">
                                     <label for="name" class="leading-7 text-sm text-gray-600">店名 ※必須</label>
