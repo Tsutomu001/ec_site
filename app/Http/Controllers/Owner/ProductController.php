@@ -20,6 +20,8 @@ use App\Models\PrimaryCategory;
 use App\Models\Owner;
 // Stock定義
 use App\Models\Stock;
+// ProductRequest定義
+use App\Http\Requests\ProductRequest;
 
 
 class ProductController extends Controller
@@ -95,25 +97,8 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        // dd($request);
-        // validation
-        $request->validate([
-            'name' => ['required', 'string', 'max:50'],
-            'information' => ['required', 'string', 'max:1000'],
-            'price' => ['required', 'integer'],
-            'sort_order' => ['nullable', 'integer'],
-            'quantity' => ['required', 'integer'],
-            'shop_id' => ['required', 'exists:shops,id'],// exists:...存在するかどうか？
-            'category' => ['required', 'exists:secondary_categories,id'],
-            'image1' => ['nullable' , 'exists:images,id'],
-            'image2' => ['nullable' , 'exists:images,id'],
-            'image3' => ['nullable' , 'exists:images,id'],
-            'image4' => ['nullable' , 'exists:images,id'],
-            'is_selling' => ['required']
-        ]);
-
         // トランザクション処理
         // Throwable ...例外を取得する
         try{
@@ -192,9 +177,69 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        //
+        $request->validate([
+            'current_quantity' => ['required', 'integer'],
+        ]);
+
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id) 
+        ->sum('quantity');
+
+        if($request->current_quantity !== $quantity){
+            $id = $request->route()->parameter('product'); //productのid取得(文字列) 
+            return redirect()->route('owner.products.edit' , [ 'product' => $id])
+            ->with(['message' => '在庫数が変更されています。再度ご確認ください。',
+                'status' => 'alert']);
+        } else{
+            // トランザクション処理
+            // Throwable ...例外を取得する
+            try{
+                // クロージャーの中で$requestを使用するため定義する。
+                DB::transaction(function () use($request, $product) {
+                    // 保存処理
+                        $product->name = $request->name;
+                        $product->information = $request->information;
+                        $product->price = $request->price;
+                        $product->sort_order = $request->sort_order;
+                        $product->shop_id = $request->shop_id;
+                        $product->secondary_category_id = $request->category;
+                        $product->image1 = $request->image1;
+                        $product->image2 = $request->image2;
+                        $product->image3 = $request->image3;
+                        $product->image4 = $request->image4;
+                        $product->is_selling = $request->is_selling;
+                        $product->save();
+
+                    if($request->type === '1'){
+                        $newQuantity = $request->quantity;
+                    }
+                    if($request->type === '2'){
+                        $newQuantity = $request->quantity * -1;
+                    }
+
+                // 紐付いたデータ
+                Stock::create([
+                    'product_id' => $product->id,
+                    'type' => $request->type,
+                    'quantity' => $newQuantity
+                ]);
+
+            },2);
+            }catch(Throwable $e){
+                // もしエラーが出たらLogを出力
+                Log::error($e);
+                // 画面上に出力する
+                throw $e;
+            }
+
+            //routeの場合は"\auth"は、使用しない 
+            return redirect()
+            ->route('owner.products.index')
+            ->with(['message' => '商品情報を更新しました。',
+            'status' => 'info']);
+        }
     }
 
     /**
