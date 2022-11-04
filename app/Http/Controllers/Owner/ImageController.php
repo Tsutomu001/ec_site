@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // Image定義
 use App\Models\Image;
+// Product定義
+use App\Models\Product;
 // Auth定義
 use Illuminate\Support\Facades\Auth;
 // UploadImageRequestの定義
@@ -133,6 +135,39 @@ class ImageController extends Controller
     {
         // Imageのidを取得
         $image = Image::findOrFail($id);
+
+        $imageInProducts = Product::where('image1', $image->id)
+        ->orWhere('image2', $image->id)
+        ->orWhere('image3', $image->id)
+        ->orWhere('image4', $image->id)
+        ->get();
+
+        if($imageInProducts){
+            // eachメソッド ...コレクションのアイテムを繰り返しで処理し、コールバックに各アイテムを渡す
+            $imageInProducts->each(function($product) use($image){
+                if($product->image1 === $image->id){
+                    // 使っていたらnullにする
+                    $product->image1 = null;
+                    $product->save();
+                }
+                if($product->image2 === $image->id){
+                    // 使っていたらnullにする
+                    $product->image2 = null;
+                    $product->save();
+                }
+                if($product->image3 === $image->id){
+                    // 使っていたらnullにする
+                    $product->image3 = null;
+                    $product->save();
+                }
+                if($product->image4 === $image->id){
+                    // 使っていたらnullにする
+                    $product->image4 = null;
+                    $product->save();
+                }
+            });
+        }
+
         // Imageを'public/products/'に保存する
         $filePath = 'public/products/' . $image->filename;
 
