@@ -231,8 +231,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         // 'Imageだとバッティングするので変更'
-        'InterventionImage' => Intervention\Image\Facades\Image::class,
-
+        'InterventionImage' => Intervention\Image\Facades\Image::class
     ],
 
 ];
