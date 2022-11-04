@@ -12,6 +12,9 @@
 
                     {{-- バリデーションのエラーメッセージ --}}
                     <x-auth-validation-errors class="mb-4" :errors="$errors" />
+
+                    {{-- フラッシュメッセージ --}}
+                    <x-flash-message status="session('status')" />
                     
                     {{-- enctype="multipart/form-data" ...添付ファイルの情報を送信する --}}
                     <form  method='post' action="{{ route('owner.products.update',[ 'product' => $product->id ]) }}">
