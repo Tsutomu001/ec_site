@@ -22,6 +22,8 @@ use App\Models\Owner;
 use App\Models\Stock;
 // ProductRequest定義
 use App\Http\Requests\ProductRequest;
+// Common定義
+use App\Constants\Common;
 
 
 class ProductController extends Controller
@@ -212,10 +214,11 @@ class ProductController extends Controller
                         $product->is_selling = $request->is_selling;
                         $product->save();
 
-                    if($request->type === '1'){
+                    // ($request->type === '1')は分かりにくいので定数に置き換える
+                    if($request->type === Common::PRODUCT_LIST['add']){
                         $newQuantity = $request->quantity;
                     }
-                    if($request->type === '2'){
+                    if($request->type === Common::PRODUCT_LIST['reduce']){
                         $newQuantity = $request->quantity * -1;
                     }
 
