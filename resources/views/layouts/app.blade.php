@@ -32,7 +32,7 @@
                 @include('layouts.owner-navigation')
             {{-- usersユーザーでログインした場合はusers-navigationが表示される --}}
             @else
-                @include('layouts.users-navigation')
+                @include('layouts.user-navigation')
             @endif
 
             <!-- Page Heading -->
