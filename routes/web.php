@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// ItemControllerの定義
+use App\Http\Controllers\User\ItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +19,12 @@ Route::get('/', function () {
     return view('user\auth.welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('user\auth.dashboard');
-})->middleware(['auth:users'])->name('dashboard');
+Route::middleware('auth:users')->group(function(){ 
+    Route::get('/', [ItemController::class, 'Index'])->name('items.index'); 
+});
+
+// Route::get('/dashboard', function () {
+//     return view('user\auth.dashboard');
+// })->middleware(['auth:users'])->name('dashboard');
 
 require __DIR__.'/auth.php';
