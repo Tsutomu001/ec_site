@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:users');
+    }
+
     public function index()
     {
         $stocks = DB::table('t_stocks') 
@@ -45,5 +50,12 @@ class ItemController extends Controller
         // $products = Product::all();
 
         return view('user\auth.index', compact('products'));
+    }
+
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return view('user\auth.show', compact('product'));
     }
 }
