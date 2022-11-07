@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // モデル定義
 use App\Models\Product;
+use App\Models\Stock;
 // DBファサードを使用するため定義する
 use Illuminate\Support\Facades\DB;
 
@@ -56,6 +57,14 @@ class ItemController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        return view('user\auth.show', compact('product'));
+        $quantity = Stock::where('product_id', $product->id) 
+        ->sum('quantity');
+
+        // 9より大きかったら強制的に9とする
+        if($quantity > 9){ 
+            $quantity = 9; 
+        }
+
+        return view('user\auth.show', compact('product','quantity'));
     }
 }
