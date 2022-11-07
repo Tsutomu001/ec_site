@@ -29,6 +29,7 @@ Route::middleware('auth:users')->group(function(){
 // prefix() ...URLをグループ化
 Route::prefix('cart')-> 
     middleware('auth:users')->group(function(){ 
+        Route::get('/', [CartController::class, 'index'])->name('cart.index'); 
         Route::post('add', [CartController::class, 'add'])->name('cart.add'); 
 });
 
