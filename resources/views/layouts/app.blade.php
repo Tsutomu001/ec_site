@@ -12,14 +12,31 @@
 
         <!-- Scripts -->
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-
         {{--　package.jsonはLaravel-mix指定だが「@vite」が使用されているので変更する --}}
         <!-- Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+
+        {{-- Swiper.js --}}
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+        />
+        <style>
+            .swiper {
+                /* width: 600px; */
+                /* height: 300px; */
+            }
+            .swiper-slide img {
+                max-width: 100%;
+            }
+            .sub-swiper .swiper-slide img:hover {
+                cursor: pointer;
+            }
+        </style>
     </head>
+
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
 
