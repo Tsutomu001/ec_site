@@ -12,6 +12,8 @@ use App\Models\SecondaryCategory;
 use App\Models\Image;
 // Stockモデルを使用するため
 use App\Models\Stock;
+// Userモデルを使用するため
+use App\Models\User;
 
 class Product extends Model
 {
@@ -79,5 +81,14 @@ class Product extends Model
     {
         // Product(親)とStock(子)のリレーション...1対多
         return $this->hasmany(Stock::class);
+    }
+
+    // 多対多のリレーション(Users)
+    public function users() 
+    { 
+        // 第2引数で中間テーブル名
+        return $this->belongsToMany(User::class, 'carts') 
+        // withPivot() ...中間テーブルのカラム取得
+        ->withPivot(['id', 'quantity']); 
     }
 }
