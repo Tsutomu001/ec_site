@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 // ItemControllerの定義
 use App\Http\Controllers\User\ItemController;
+// CartControllerの定義
+use App\Http\Controllers\User\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,12 @@ Route::get('/', function () {
 Route::middleware('auth:users')->group(function(){ 
     Route::get('/', [ItemController::class, 'Index'])->name('items.index'); 
     Route::get('show/{item}', [ItemController::class, 'show'])->name('items.show'); 
+});
+
+// prefix() ...URLをグループ化
+Route::prefix('cart')-> 
+    middleware('auth:users')->group(function(){ 
+        Route::post('add', [CartController::class, 'add'])->name('cart.add'); 
 });
 
 // Route::get('/dashboard', function () {
