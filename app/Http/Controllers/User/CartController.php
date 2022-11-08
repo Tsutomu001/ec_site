@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 // Userモデル定義
 use App\Models\User;
+// Stockモデル定義
+use App\Models\Stock;
+// Common定義
+use App\Constants\Common;
 
 class CartController extends Controller
 {
@@ -67,16 +71,37 @@ class CartController extends Controller
 
         $lineItems = [];
         foreach($products as $product){
-            $lineItem = [
-                'name' => $product->name,
-                'description' => $product->information,
-                'amount' => $product->price,
-                'currency' => 'jpy',
-                'quantity' => $product->pivot->quantity,
-            ];
-            array_push($lineItems, $lineItem);
+            $quantity = '';
+            // 現在の在庫数が分かるようにする処理
+            $quantity = Stock::where('product_id', $product->id)->sum('quantity');
+
+            // もし"Cartの数量"が"商品の数量"より大きかったら
+            if($product->pivot->quantity > $quantity){
+                // Cartの一覧に戻す
+                return redirect()->route('user.cart.index');    
+            } else {
+                // 決算処理
+                $lineItem = [
+                    'name' => $product->name,
+                    'description' => $product->information,
+                    'amount' => $product->price,
+                    'currency' => 'jpy',
+                    'quantity' => $product->pivot->quantity,
+                ];
+                array_push($lineItems, $lineItem);
+            }
         }
         // dd($lineItems);
+        foreach($products as $product){
+            // 紐付いたデータ
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => Common::PRODUCT_LIST['reduce'],
+                'quantity' => $product->pivot->quantity * -1
+            ]);
+        }
+
+        dd('test');
 
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
