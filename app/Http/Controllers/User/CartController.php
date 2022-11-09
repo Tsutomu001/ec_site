@@ -116,7 +116,7 @@ class CartController extends Controller
             'line_items' => [$lineItems],
             'mode' => 'payment',
             // 支払いが成功したら
-            'success_url' => route('user.items.index'),
+            'success_url' => route('user.cart.success'),
             // 支払いが失敗したら
             'cancel_url' => route('user.cart.index'),
         ]);
@@ -125,5 +125,12 @@ class CartController extends Controller
 
         return view('user/auth.checkout',
             compact('session','publicKey'));
+    }
+
+    public function success()
+    {
+        Cart::where('user_id', Auth::id())->delete();
+
+        return redirect()->route('user.items.index');
     }
 }
