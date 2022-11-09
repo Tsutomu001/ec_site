@@ -14,6 +14,8 @@ use App\Models\Image;
 use App\Models\Stock;
 // Userモデルを使用するため
 use App\Models\User;
+// DBファサードを使用するため定義する
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -90,5 +92,33 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'carts') 
         // withPivot() ...中間テーブルのカラム取得
         ->withPivot(['id', 'quantity']); 
+    }
+
+    // ローカルスコープ
+    public function scopeAvailableItems($query)
+    {
+        $stocks = DB::table('t_stocks') 
+        ->select('product_id',
+        DB::raw('sum(quantity) as quantity')) // raw ...SQLをそのまま書くことができる
+        ->groupBy('product_id') // groupBy() ...重複を削除したカラムを取得する
+        ->having('quantity', '>', 1); // having() ...where()と同じ考え方
+
+        return $query
+        ->joinSub($stocks, 'stock', function($join){ // $stocks = 'stock'
+            $join->on('products.id', '=', 'stock.product_id'); 
+        })
+        // join()...tableを繋げる
+        // join('繋げたいtable名', '繋げられるtableのカラム', '=', '繋げたいtableのカラム')
+        ->join('shops', 'products.shop_id', '=', 'shops.id') 
+        ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id') 
+        // as ...別名と置き換える
+        ->join('images as image1', 'products.image1', '=', 'image1.id') 
+        ->where('shops.is_selling', true) 
+        ->where('products.is_selling', true)
+        // idだけにするとjoinしたtableと被るので「as」で別名に置き換える
+        ->select('products.id as id', 'products.name as name', 'products.price' 
+        ,'products.sort_order as sort_order' 
+        ,'products.information', 'secondary_categories.name as category' 
+        ,'image1.filename as filename');
     }
 }
