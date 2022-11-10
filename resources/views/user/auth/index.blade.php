@@ -1,8 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('ホーム') }}
+            商品一覧
         </h2>
+        <form>
+        @csrf
+            <div class="lg:flex lg:justify-around">
+                <div class = "lg:flex items-center">
+                    <div class="flex items-center">
+                        <select name="category" class="mr-3">
+                            <option value="0" @if(\Request::get('category') === '0') selected @endif>全て</option>
+                            {{-- categoryの名前を取得する --}}
+                            @foreach($categories as $category) 
+                            <optgroup label="{{ $category->name }}"> 
+                            {{-- 紐づいたsecondaryの名前を取得する --}}
+                            @foreach($category->secondary as $secondary) 
+                            <option value="{{ $secondary->id }}" @if(\Request::get('category') == $secondary->id ) selected @endif> 
+                            {{ $secondary->name }} 
+                            </option> 
+                            @endforeach 
+                            @endforeach 
+                        </select>
+                        <div><input name="keyword" class="border border-gray-500 py-2 mr-3" placeholder="キーワードを入力"></div>
+                        <div><button class="ml-auto mr-3 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">検索する</button></div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </x-slot>
 
     <div class="py-12">
