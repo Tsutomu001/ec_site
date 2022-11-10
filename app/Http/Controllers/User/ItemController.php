@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 // モデル定義
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\PrimaryCategory;
 // DBファサードを使用するため定義する
 use Illuminate\Support\Facades\DB;
 
@@ -31,12 +32,19 @@ class ItemController extends Controller
         });
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Models(Product.php)の処理内容
-        $products = Product::availableItems()->get();
+        // secondaryはModelsのSecondaryCategoryのpublic functionで定義したもの
+        $categories = PrimaryCategory::with('secondary')
+        ->get();
 
-        return view('user\auth.index', compact('products'));
+        // Models(Product.php)の処理内容
+        $products = Product::availableItems()
+        ->selectCategory($request->category ?? '0')
+        ->searchKeyword($request->keyword)
+        ->get();
+
+        return view('user\auth.index', compact('products','categories'));
     }
 
     public function show($id)

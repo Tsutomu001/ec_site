@@ -121,4 +121,38 @@ class Product extends Model
         ,'products.information', 'secondary_categories.name as category' 
         ,'image1.filename as filename');
     }
+
+    // 検索フォーム(カテゴリーの絞り込み)
+    public function scopeSelectCateGory($query, $categoryId)
+    {
+        if($categoryId !== '0')
+        {
+            return $query->where('secondary_category_id', $categoryId);
+        } else {
+            return;
+        }
+    }
+
+    // 検索フォーム(キーワードの絞り込み)
+    public function scopeSearchKeyword($query, $keyword)
+    {
+        if(!is_null($keyword))
+        {
+            //全角スペースを半角に
+            $spaceConvert = mb_convert_kana($keyword,'s');  
+
+            //空白で区切る 
+            $keywords = preg_split('/[\s]+/', $spaceConvert,-1,PREG_SPLIT_NO_EMPTY); 
+
+            //単語をループで回す 
+            foreach($keywords as $word)
+            { 
+            $query->where('products.name','like','%'.$word.'%'); 
+            } 
+            return $query; 
+        } else {
+            return;
+        }
+    }
+
 }
