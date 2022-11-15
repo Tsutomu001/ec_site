@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 // Mailクラスを定義する
 use App\Mail\TestMail;
+// SendThanksMailを定義する
+use App\Jobs\SendThanksMail; 
 
 class ItemController extends Controller
 {
@@ -38,8 +40,14 @@ class ItemController extends Controller
 
     public function index(Request $request)
     {
-        Mail::to('test@example.com')
-        ->send(new TestMail());
+        // 同期的に送信
+        // テストメール送信のコード
+        // Mail::to('test@example.com')
+        // ->send(new TestMail());
+
+        // 非同期的に送信
+        SendThanksMail::dispatch();
+
 
         // secondaryはModelsのSecondaryCategoryのpublic functionで定義したもの
         $categories = PrimaryCategory::with('secondary')
