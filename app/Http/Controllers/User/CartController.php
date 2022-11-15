@@ -14,6 +14,8 @@ use App\Models\User;
 use App\Models\Stock;
 // Common定義
 use App\Constants\Common;
+// CartService;
+use App\Services\CartService;
 
 class CartController extends Controller
 {
@@ -66,6 +68,9 @@ class CartController extends Controller
 
     public function checkout()
     {
+        $itemsInCart = Cart::where('user_id', Auth::id())->get();
+        $products = CartService::getItemsInCart($itemsInCart);
+
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
 
