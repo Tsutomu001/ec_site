@@ -10,6 +10,10 @@ use App\Models\Stock;
 use App\Models\PrimaryCategory;
 // DBファサードを使用するため定義する
 use Illuminate\Support\Facades\DB;
+// Mailファサードを使用するために定義する
+use Illuminate\Support\Facades\Mail;
+// Mailクラスを定義する
+use App\Mail\TestMail;
 
 class ItemController extends Controller
 {
@@ -34,6 +38,9 @@ class ItemController extends Controller
 
     public function index(Request $request)
     {
+        Mail::to('test@example.com')
+        ->send(new TestMail());
+
         // secondaryはModelsのSecondaryCategoryのpublic functionで定義したもの
         $categories = PrimaryCategory::with('secondary')
         ->get();
