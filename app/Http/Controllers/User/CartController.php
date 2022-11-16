@@ -14,8 +14,10 @@ use App\Models\User;
 use App\Models\Stock;
 // Common定義
 use App\Constants\Common;
-// CartService;
+// CartService定義
 use App\Services\CartService;
+// SendThanksMail定義
+use App\Jobs\SendThanksMail;
 
 class CartController extends Controller
 {
@@ -68,8 +70,16 @@ class CartController extends Controller
 
     public function checkout()
     {
+
+        // 
         $itemsInCart = Cart::where('user_id', Auth::id())->get();
         $products = CartService::getItemsInCart($itemsInCart);
+        $user = User::findOrFail(Auth::id());
+
+        SendThanksMail::dispatch($products, $user);
+        dd('ユーザーメール送信テスト');
+        // 
+
 
         $user = User::findOrFail(Auth::id());
         $products = $user->products;

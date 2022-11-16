@@ -46,7 +46,7 @@ class ItemController extends Controller
         // ->send(new TestMail());
 
         // 非同期的に送信
-        SendThanksMail::dispatch();
+        // SendThanksMail::dispatch();
 
 
         // secondaryはModelsのSecondaryCategoryのpublic functionで定義したもの
