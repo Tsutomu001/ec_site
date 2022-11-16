@@ -70,6 +70,7 @@ storage/app/public/shopsフォルダを作成し
 画像を保存してください。
 
 ## ログイン情報について
+
 ---管理者用の画面(/admin/login)---
 
 Email => test@test.com
@@ -90,10 +91,21 @@ Email => test@test.com
 
 Password => password
 
-
-
 ## 決済について
+
 決済のテストとしてstripeを利用しています。
 必要な場合は .env にstripeの情報を追記してください。
+
+## メールテストについて
+
+メールのテストとしてmailtrapを利用しています。
+必要な場合は.envにmailtrapの情報を追記してください。
+
+メール処理には時間がかかるので、キューを使用しています。
+
+必要な場合は php artisan queue:workで
+ワーカーを立ち上げて動作確認をするようにしてください。
+
+
 
 
